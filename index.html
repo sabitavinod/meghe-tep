@@ -130,15 +130,30 @@ input:focus{outline:none;border-color:var(--blue);}
   </div>
   <label class="lbl">Your full name</label>
   <input type="text" id="tname" placeholder="e.g. Anita Kulkarni" autocomplete="name"/>
-  <label class="lbl">Your school name</label>
-  <input type="text" id="tschool" placeholder="e.g. St. Mary's High School"/>
+  <label class="lbl">Your school / department</label>
+  <select id="tschool" style="width:100%;padding:12px 13px;border:1px solid var(--rule);border-radius:8px;font-family:'Jost',sans-serif;font-size:14px;color:var(--ink);background:#fff;margin-bottom:10px;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22><path fill=%22%236b6b72%22 d=%22M6 8L0 0h12z%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;">
+    <option value="">-- Select your school --</option>
+    <option value="HO">HO</option>
+    <option value="SOS Atrey">SOS Atrey</option>
+    <option value="SOS Wanadongri">SOS Wanadongri</option>
+    <option value="SOS Wardha">SOS Wardha</option>
+  </select>
   <div class="mod-strip">
-    <div class="mc"><div class="mi">🎧</div><div class="mn">Listening</div><div class="ms">Audio + 5 MCQ</div></div>
-    <div class="mc"><div class="mi">📖</div><div class="mn">Reading</div><div class="ms">Passage + 3 MCQ</div></div>
+    <div class="mc"><div class="mi">🎧</div><div class="mn">Listening</div><div class="ms">Listen &amp; answer 5 MCQ</div></div>
+    <div class="mc"><div class="mi">📖</div><div class="mn">Reading</div><div class="ms">Read &amp; answer 5 MCQ</div></div>
     <div class="mc"><div class="mi">🎤</div><div class="mn">Spoken</div><div class="ms">Read aloud</div></div>
   </div>
+  <div style="background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:1rem;margin-bottom:1rem;">
+    <div style="font-size:12px;font-weight:600;color:var(--ink);margin-bottom:8px;letter-spacing:.3px;">📋 Instructions</div>
+    <div style="font-size:12px;color:var(--ink2);line-height:1.9;">
+      <div style="margin-bottom:5px;">🎧 <strong>Listening</strong> — An audio passage will play. Listen carefully. Questions will appear only after the audio ends. You may listen up to 3 times.</div>
+      <div style="margin-bottom:5px;">📖 <strong>Reading</strong> — Read the passage shown on screen and answer 5 questions based on it.</div>
+      <div style="margin-bottom:5px;">🎤 <strong>Spoken English</strong> — A paragraph will be shown. Read it aloud clearly into the microphone.</div>
+      <div>🔊 <strong>Please keep your device volume on</strong> before you begin the test.</div>
+    </div>
+  </div>
   <button class="btn btn-dark" onclick="startTest()">Begin Test →</button>
-  <div class="notice">Keep your volume on for the listening section · Each teacher gets a different set of questions</div>
+  <div class="notice">Each staff member gets a different set of questions · Results are submitted automatically</div>
 </div>
 
 <!-- LISTENING -->
@@ -165,8 +180,7 @@ input:focus{outline:none;border-color:var(--blue);}
       Now answer the questions based on what you heard. You can still listen again if needed.
     </div>
     <div id="listening-qs"></div>
-    <div class="row2" style="margin-top:10px;">
-      <button class="btn btn-ghost" onclick="submitListening()">Skip</button>
+    <div style="margin-top:10px;">
       <button class="btn btn-dark" onclick="submitListening()">Submit & Continue →</button>
     </div>
   </div>
@@ -181,8 +195,7 @@ input:focus{outline:none;border-color:var(--blue);}
     <div class="passage-box" id="reading-passage"></div>
   </div>
   <div id="reading-qs"></div>
-  <div class="row2" style="margin-top:10px;">
-    <button class="btn btn-ghost" onclick="initSpoken()">Skip</button>
+  <div style="margin-top:10px;">
     <button class="btn btn-dark" onclick="submitReading()">Submit & Continue →</button>
   </div>
 </div>
@@ -607,8 +620,7 @@ function tryLoadAudio(filename){
   audio.onplay=()=>{
     T.audioPlaying=true;
     document.getElementById('ap-btn').textContent='⏸';
-    document.getElementById('ap-status').textContent='🔊 Playing… listen carefully. Do not look away.';
-    revealQuestions(); // reveal on first play
+    document.getElementById('ap-status').textContent='🔊 Playing… listen carefully. Questions will appear when audio ends.';
   };
 }
 
@@ -696,8 +708,7 @@ function playTTS(){
     let elapsed=0,currentIdx=0,stopped=false;
     T.audioPlaying=true;
     document.getElementById('ap-btn').textContent='⏸';
-    document.getElementById('ap-status').textContent='🔊 Sentence 1 of '+sentences.length+' — listen carefully';
-    revealQuestions();
+    document.getElementById('ap-status').textContent='🔊 Sentence 1 of '+sentences.length+' — listen carefully. Questions appear when done.';
     T.audioInterval=setInterval(()=>{
       elapsed++;
       document.getElementById('ap-progress').style.width=Math.min((elapsed/estSecs)*100,97)+'%';
